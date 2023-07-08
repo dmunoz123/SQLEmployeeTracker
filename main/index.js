@@ -84,11 +84,29 @@ function loadUserPrompts() {
 }
 
 viewDepartments() {
-  
+  try{
+    const [rows] = await db.findAllDepartments();
+    let departments = rows;
+    console.log("\n");
+    console.table(departments);
+    loadUserPrompts();
+  } catch (error) {
+    console.error("Error viewing all of the departments:", error);
+    throw error;
+  }
 }
 
 viewRoles() {
-
+  try {
+    const [rows] = await db.findAllRoles();
+    let roles = rows;
+    console.log("\n");
+    console.table(roles);
+    loadUserPrompts();
+  } catch (error) {
+    console.error("Error viewing all of the roles:", error);
+    throw error;
+  }
 }
 
 viewEmployees() {
@@ -96,7 +114,21 @@ viewEmployees() {
 }
 
 addDepartment() {
-
+  try {
+    prompt([
+    { 
+      name: "department-name",
+      message: "What is the name of the department?"
+    }
+  ]);
+  const name = res.name
+  await db.newDepartment(name);
+  console.log(`Added ${name} to the database`);
+  loadUserPrompts();
+  } catch (error) {
+    console.error("Error adding the department:", error);
+    throw error;
+  }
 }
 
 addEmployee() {
@@ -104,7 +136,39 @@ addEmployee() {
 }
 
 updateRole() {
+  try {
+    const [rows] = await db.findAllDepartments();
+    const departments = rows;
+    const departmentChoices = departments.map(({ id, name}) => ({
+      name: name,
+      value: id
+    }));
 
+    const role = await prompt([
+      {
+        name: "title",
+        message: "What is the name of the role?"
+      },
+      {
+        name: "salary",
+        message: "What is the salary of the role?"
+      },
+      {
+        type: "list",
+        name: "department_id",
+        message: "Which department does the role belong to?",
+        //offers the user a list of the different departments available to chose from
+        choices: departmentChoices
+      }
+    ]);
+
+    await db.newRole(role);
+    console.log(`Added ${role.title} to the database`);
+    loadUserPrompts();
+  } catch (error) {
+    console.error("Error adding the role:", error);
+    throw error;
+  }
 }
 
 quit() {
