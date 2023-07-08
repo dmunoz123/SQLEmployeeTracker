@@ -1,7 +1,7 @@
-const inquirer = require("inquirer");
+const { prompt } = require("inquirer");
 const logo = require("asciiart-logo");
 
-//load entire db folder into const
+//load db folder contents
 const db = require("./db");
 
 function init() {
@@ -29,32 +29,87 @@ function loadUserPrompts() {
       message: 'Please choose an option.'
       choices: [
         {
-          name: "View All Departments"
+          name: "View All Departments",
+          value: "VIEW_DEPARTMENTS"
         },
         {
-          name: "View All Roles"
+          name: "View All Roles",
+          value: "VIEW_ROLES"
         },
         {
-          name: "View All Employees"
+          name: "View All Employees",
+          value: "VIEW_EMPLOYEES"
         },
         {
-          name: "Add A Department"
+          name: "Add A Department",
+          value: "ADD_DEPARTMENT"
         },
         {
-          name: "Add An Employee"
+          name: "Add An Employee",
+          value: "ADD_EMPLOYEE"
         },
         {
-          name: "Update An Employee Role"
+          name: "Update An Employee Role",
+          value: "UPDATE_ROLE"
         }
         {
-          name: "Quit?"
+          name: "Quit?",
+          value: "QUIT"
         }
       ]
     }
   ]).then(res => {
+    // save the chosenn option into userChoice
     let userChoice = res.choice;
 
-  })
+    // object creation which maps each option to a function which will render the chosen data (for later usage)
+    const choiceToFunction = {
+      VIEW_DEPARTMENTS: viewDepartments,
+      VIEW_ROLES: viewRoles,
+      VIEW_EMPLOYEES: viewEmployees,
+      ADD_DEPARTMENT: addDepartment,
+      ADD_EMPLOYEE: addEmployee,
+      UPDATE_ROLE: updateRole,
+      QUIT: quit
+    };
+
+    // check to make sure user chose a valid option, otherwise return error
+    if (choiceToFunction.hasOwnProperty(choice)) {
+      // calling relative function based on user choice
+      choiceToFunction[choice]();
+    } else {
+      console.log("Invalid choice! You must choose from the options listed.")
+    }
+  });
+}
+
+viewDepartments() {
+  
+}
+
+viewRoles() {
+
+}
+
+viewEmployees() {
+
+}
+
+addDepartment() {
+
+}
+
+addEmployee() {
+
+}
+
+updateRole() {
+
+}
+
+quit() {
+  console.log("It was fun browsing the company with you :) ");
+  process.exit();
 }
 
 
